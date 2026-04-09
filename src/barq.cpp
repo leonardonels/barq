@@ -302,12 +302,7 @@ Reader::Reader(const std::string& name, size_t max_size)
 }
 
 Reader::~Reader() {
-    if (ptr_ && ptr_ != MAP_FAILED) {
-        munmap(ptr_, shm_size_);
-    }
-    if (fd_ >= 0) {
-        close(fd_);
-    }
+    destroy();
 }
 
 bool Reader::init() {
@@ -357,6 +352,21 @@ bool Reader::init() {
     
     initialized_ = true;
     return true;
+}
+
+void Reader::destroy(){
+    if(ptr_ && ptr_ != MAP_FAILED){
+        munmap(ptr_, shm_size_);
+        ptr_ = nullptr;
+    }
+    if(fd_ >= 0){
+        close(fd_);
+        fd_ = -1;
+    }
+    header_ = nullptr;
+    buffer_[0] = nullptr;
+    buffer_[1] = nullptr;
+    initialized_ = false;
 }
 
 const void* Reader::getLatest(size_t& size, int64_t& timestamp_ns) {
