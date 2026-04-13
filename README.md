@@ -15,6 +15,7 @@ This adds a syscall to the writer's hot path on every `write()/commit()` on a "S
 ## TODO:
 - [ ] missing ARM non-temporal path (ARM NEON non temporal store intrinsics) for BARQ writer
 - [x] study a signal system to advertise readers for new messages (e.g., futex or eventfd) - but this may add latency and complexity, so maybe not worth it
+- [ ] known issue: writer not writing for whatever reason (no points to publish for example) will trigger the eventual writer_alive_watchdog_timer
 
 ---
 OG library author: Nabil Achir - https://github.com/achir-dev
